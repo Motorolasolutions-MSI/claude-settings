@@ -2,8 +2,11 @@
 
 Ruflo (formerly Claude Flow) is a multi-agent orchestration platform for Claude Code. It enables deployment of specialized AI agents working in coordinated swarms with self-learning capabilities, distributed memory, and native MCP integration.
 
+> **Note on naming**: The CLI tool and npm packages still use the `claude-flow` name. Commands shown below use `claude-flow` accordingly. The `ruflo` shorthand is available as an alias after installation.
+
 ## Table of Contents
 
+- [Quick Start](#quick-start)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Configuration](#configuration)
@@ -12,6 +15,30 @@ Ruflo (formerly Claude Flow) is a multi-agent orchestration platform for Claude 
 - [CLI Reference](#cli-reference)
 - [Architecture Overview](#architecture-overview)
 - [Troubleshooting](#troubleshooting)
+- [Resources](#resources)
+
+---
+
+## Quick Start
+
+Get up and running in under 5 minutes:
+
+```bash
+# 1. Set your API key
+export ANTHROPIC_API_KEY="your-api-key-here"
+
+# 2. Install Claude Code and Ruflo
+npm install -g @anthropic-ai/claude-code
+npx ruflo@latest init --wizard
+
+# 3. Register as MCP server in Claude Code
+claude mcp add claude-flow npx claude-flow@alpha mcp start
+
+# 4. Verify everything works
+claude-flow hive status
+```
+
+You now have 310+ MCP tools available inside Claude Code for multi-agent orchestration.
 
 ---
 
@@ -160,11 +187,34 @@ claude-flow project init --template full-stack
 
 With MCP enabled, you can invoke Ruflo tools directly from Claude Code sessions. The platform exposes tools for:
 
-- **Agent spawning and coordination** - Create and manage specialized agents
-- **Task routing with model selection** - Intelligent task distribution across agents
-- **Memory and knowledge graph operations** - Persistent vector-based memory
-- **Security scanning** - Prompt injection blocking, PII detection
-- **Session persistence** - Save and restore orchestration state
+- **Agent spawning and coordination** — Create and manage specialized agents
+- **Task routing with model selection** — Intelligent task distribution across agents
+- **Memory and knowledge graph operations** — Persistent vector-based memory
+- **Security scanning** — Prompt injection blocking, PII detection
+- **Session persistence** — Save and restore orchestration state
+
+#### Example: Spawning a research swarm
+
+Inside a Claude Code session, you can ask Claude to use Ruflo tools:
+
+```
+> Use Ruflo to spawn a research swarm that analyzes the security
+  posture of our API endpoints.
+```
+
+Claude Code will call the appropriate MCP tools to:
+1. Spawn researcher and analyst agents
+2. Coordinate them via the swarm manager
+3. Aggregate findings into a structured report
+
+#### Example: Storing and retrieving context
+
+```
+> Store a summary of today's architecture decisions in Ruflo memory.
+> Later: Search Ruflo memory for our API versioning decisions.
+```
+
+This uses the vector-based memory system for persistent knowledge across sessions.
 
 ## Local Development Setup
 
@@ -315,6 +365,33 @@ claude-flow mcp restart
 **Cache issues:**
 ```bash
 npm cache clean --force
+```
+
+**API key not recognized:**
+```bash
+# Verify the key is set
+echo $ANTHROPIC_API_KEY
+# Re-export if needed
+export ANTHROPIC_API_KEY="your-key"
+# Test connectivity
+claude-flow config validate
+```
+
+**Agent spawning timeouts:**
+```bash
+# Increase the spawn timeout (default is 30s)
+claude-flow config set agent.spawnTimeout 60000
+# Check system resource usage
+claude-flow hive status --verbose
+```
+
+**Docker container can't access API:**
+```bash
+# Ensure the API key is passed to the container
+docker run -it --name claude-flow \
+  -v $(pwd):/workspace \
+  -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
+  ruvnet/claude-flow:v2-alpha
 ```
 
 ---
