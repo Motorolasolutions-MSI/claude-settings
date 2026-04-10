@@ -1,0 +1,114 @@
+{
+  "statuses": {
+    "JFK": {
+      "IATA": "JFK",
+      "Name": "John F. Kennedy Intl",
+      "Status": {
+        "Reason": "Ground Delay Program: low ceilings",
+        "Type": "Ground Delay",
+        "AvgDelayMinutes": 52,
+        "ClosureBegin": null,
+        "ClosureEnd": null
+      }
+    },
+    "LAX": {
+      "IATA": "LAX",
+      "Name": "Los Angeles Intl",
+      "Status": {
+        "Reason": "No delays reported",
+        "Type": "Normal",
+        "AvgDelayMinutes": 0,
+        "ClosureBegin": null,
+        "ClosureEnd": null
+      }
+    },
+    "LHR": {
+      "IATA": "LHR",
+      "Name": "London Heathrow",
+      "Status": {
+        "Reason": "Minor departure delays due to crosswinds",
+        "Type": "Delay",
+        "AvgDelayMinutes": 28,
+        "ClosureBegin": null,
+        "ClosureEnd": null
+      }
+    },
+    "HND": {
+      "IATA": "HND",
+      "Name": "Tokyo Haneda",
+      "Status": {
+        "Reason": "No delays reported",
+        "Type": "Normal",
+        "AvgDelayMinutes": 0,
+        "ClosureBegin": null,
+        "ClosureEnd": null
+      }
+    },
+    "SIN": {
+      "IATA": "SIN",
+      "Name": "Singapore Changi",
+      "Status": {
+        "Reason": "Thunderstorms causing ground stop",
+        "Type": "Ground Stop",
+        "AvgDelayMinutes": 80,
+        "ClosureBegin": null,
+        "ClosureEnd": null
+      }
+    },
+    "DXB": {
+      "IATA": "DXB",
+      "Name": "Dubai Intl",
+      "Status": {
+        "Reason": "No delays reported",
+        "Type": "Normal",
+        "AvgDelayMinutes": 0,
+        "ClosureBegin": null,
+        "ClosureEnd": null
+      }
+    },
+    "FRA": {
+      "IATA": "FRA",
+      "Name": "Frankfurt Airport",
+      "Status": {
+        "Reason": "Runway maintenance causing moderate delays",
+        "Type": "Delay",
+        "AvgDelayMinutes": 35,
+        "ClosureBegin": null,
+        "ClosureEnd": null
+      }
+    },
+    "CDG": {
+      "IATA": "CDG",
+      "Name": "Paris Charles de Gaulle",
+      "Status": {
+        "Reason": "Temporary closure: air traffic control action",
+        "Type": "Closure",
+        "AvgDelayMinutes": 0,
+        "ClosureBegin": "2026-04-10T12:00:00Z",
+        "ClosureEnd": "2026-04-10T18:00:00Z"
+      }
+    },
+    "PVG": {
+      "IATA": "PVG",
+      "Name": "Shanghai Pudong",
+      "Status": {
+        "Reason": "No delays reported",
+        "Type": "Normal",
+        "AvgDelayMinutes": 0,
+        "ClosureBegin": null,
+        "ClosureEnd": null
+      }
+    },
+    "HKG": {
+      "IATA": "HKG",
+      "Name": "Hong Kong Intl",
+      "Status": {
+        "Reason": "No delays reported",
+        "Type": "Normal",
+        "AvgDelayMinutes": 0,
+        "ClosureBegin": null,
+        "ClosureEnd": null
+      }
+    }
+  }
+}

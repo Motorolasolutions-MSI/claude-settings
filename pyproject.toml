@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "weather-god"
+version = "0.1.0"
+description = "Global transit-risk report combining weather, airport ops, and geopolitical disruptions."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "sambloomberg-sketch" }]
+dependencies = [
+    "requests>=2.28",
+]
+
+[project.optional-dependencies]
+pretty = ["rich>=13"]
+dev = ["pytest>=7", "pytest-mock>=3.10"]
+
+[project.scripts]
+weather-god = "weather_god.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+weather_god = ["../data/*.json", "../data/mock/*.json"]
