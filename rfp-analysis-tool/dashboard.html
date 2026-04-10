@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heavyweight Air RFP Bid Analysis Dashboard</title>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-light: #e8f0fe;
+            --success: #0d904f;
+            --warning: #e37400;
+            --danger: #d93025;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #202124;
+            --text-secondary: #5f6368;
+            --border: #dadce0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 { font-size: 1.5rem; font-weight: 500; }
+        .header p { opacity: 0.85; font-size: 0.9rem; margin-top: 0.25rem; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+
+        .upload-section {
+            background: var(--card-bg);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.2s;
+        }
+
+        .upload-section:hover { border-color: var(--primary); }
+
+        .upload-section input[type="file"] { display: none; }
+
+        .upload-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            border: none;
+            margin: 0.5rem;
+        }
+
+        .upload-btn:hover { opacity: 0.9; }
+
+        .demo-btn {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .grid { display: grid; gap: 1.5rem; }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.8rem;
+        }
+
+        .ranking-table { width: 100%; border-collapse: collapse; }
+        .ranking-table th, .ranking-table td {
+            padding: 0.6rem 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+        .ranking-table th {
+            background: var(--bg);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        .ranking-table tr:hover { background: var(--primary-light); }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .rank-1 { background: #ffd700; color: #000; }
+        .rank-2 { background: #c0c0c0; color: #000; }
+        .rank-3 { background: #cd7f32; color: #fff; }
+        .rank-other { background: var(--bg); color: var(--text-secondary); }
+
+        .score-bar {
+            height: 8px;
+            background: var(--bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0.15rem;
+        }
+
+        .risk-high { background: #fce8e6; color: var(--danger); }
+        .risk-medium { background: #fef7e0; color: var(--warning); }
+        .risk-low { background: #e6f4ea; color: var(--success); }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .bar-label {
+            width: 140px;
+            font-size: 0.8rem;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 24px;
+            background: var(--bg);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            font-size: 0.75rem;
+            color: white;
+            font-weight: 600;
+            transition: width 0.6s ease;
+            min-width: fit-content;
+        }
+
+        .weight-sliders {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .weight-slider {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .weight-slider label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .weight-slider input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+        }
+
+        .hidden { display: none; }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            color: var(--text);
+        }
+
+        .supplier-colors {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .color-legend {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+        }
+
+        .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .recommendation-box {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .recommendation-box h3 {
+            color: var(--success);
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .weight-sliders { grid-template-columns: 1fr; }
+            .container { padding: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✈️ Heavyweight Air RFP — Bid Analysis Dashboard</h1>
+        <p>Compare supplier bids with weighted scoring, cost analysis, and risk assessment</p>
+    </div>
+
+    <div class="container">
+        <!-- Upload / Demo Section -->
+        <div class="upload-section" id="uploadSection">
+            <h3>Load Analysis Data</h3>
+            <p style="margin: 0.5rem 0; color: var(--text-secondary);">
+                Upload the <code>analysis_results.json</code> file generated by <code>analyze_bids.py</code>,
+                or load the built-in demo data.
+            </p>
+            <label class="upload-btn" for="fileInput">📁 Upload JSON File</label>
+            <input type="file" id="fileInput" accept=".json">
+            <button class="upload-btn demo-btn" onclick="loadDemoData()">▶ Load Demo Data</button>
+        </div>
+
+        <!-- Dashboard Content (hidden until data loads) -->
+        <div id="dashboard" class="hidden">
+            <!-- Recommendation -->
+            <div class="recommendation-box" id="recommendation"></div>
+
+            <!-- Summary Stats -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-title">Overview</div>
+                <div class="stat-grid" id="summaryStats"></div>
+            </div>
+
+            <!-- Weight Adjustment -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-title">⚖️ Adjust Evaluation Weights (interactive — scores recalculate live)</div>
+                <div class="weight-sliders" id="weightSliders"></div>
+                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    Weights are automatically normalized to sum to 100%.
+                </p>
+            </div>
+
+            <!-- Rankings Table -->
+            <h2 class="section-title">🏆 Supplier Rankings</h2>
+            <div class="card" style="overflow-x: auto;">
+                <table class="ranking-table" id="rankingTable"></table>
+            </div>
+
+            <!-- Score Breakdown Charts -->
+            <h2 class="section-title">📊 Score Breakdown</h2>
+            <div id="colorLegend" class="supplier-colors"></div>
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-title">Total Weighted Score</div>
+                    <div class="bar-chart" id="totalScoreChart"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Cost Score</div>
+                    <div class="bar-chart" id="costScoreChart"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Transit Score</div>
+                    <div class="bar-chart" id="transitScoreChart"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Reliability Score</div>
+                    <div class="bar-chart" id="reliabilityScoreChart"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Capacity Score</div>
+                    <div class="bar-chart" id="capacityScoreChart"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Qualitative Score</div>
+                    <div class="bar-chart" id="qualitativeScoreChart"></div>
+                </div>
+            </div>
+
+            <!-- Cost Analysis -->
+            <h2 class="section-title">💰 Cost Analysis</h2>
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-title">Total Annual Cost Comparison</div>
+                    <div class="bar-chart" id="costComparisonChart"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Cost by Lane (Top Supplier vs. Cheapest)</div>
+                    <div id="laneCostTable" style="overflow-x: auto;"></div>
+                </div>
+            </div>
+
+            <!-- Risk Assessment -->
+            <h2 class="section-title">⚠️ Risk Assessment</h2>
+            <div class="grid grid-3" id="riskCards"></div>
+
+            <!-- Contract Comparison -->
+            <h2 class="section-title">📋 Contract Terms Comparison</h2>
+            <div class="card" style="overflow-x: auto;">
+                <table class="ranking-table" id="contractTable"></table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Color palette for suppliers
+        const COLORS = ['#1a73e8', '#0d904f', '#e37400', '#d93025', '#9334e6', '#00796b', '#c2185b', '#5d4037'];
+
+        let analysisData = null;
+        let currentWeights = {
+            total_cost: 35,
+            transit_time: 15,
+            reliability: 15,
+            capacity: 10,
+            qualitative: 15,
+            contract_flexibility: 10
+        };
+
+        // File upload handler
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    analysisData = JSON.parse(evt.target.result);
+                    renderDashboard();
+                } catch (err) {
+                    alert('Error parsing JSON file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        function loadDemoData() {
+            // Demo data embedded for standalone use
+            analysisData = getDemoData();
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            document.getElementById('uploadSection').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+
+            renderWeightSliders();
+            recalculateAndRender();
+        }
+
+        function recalculateAndRender() {
+            // Normalize weights
+            const totalW = Object.values(currentWeights).reduce((a, b) => a + b, 0);
+            const normWeights = {};
+            for (const [k, v] of Object.entries(currentWeights)) {
+                normWeights[k] = v / totalW;
+            }
+
+            // Recalculate total weighted scores
+            for (const sup of analysisData.suppliers) {
+                sup.scores.total_weighted = +(
+                    sup.scores.cost * normWeights.total_cost +
+                    sup.scores.transit * normWeights.transit_time +
+                    sup.scores.reliability * normWeights.reliability +
+                    sup.scores.capacity * normWeights.capacity +
+                    sup.scores.qualitative * normWeights.qualitative +
+                    sup.scores.contract_flexibility * normWeights.contract_flexibility
+                ).toFixed(2);
+            }
+
+            // Re-rank
+            analysisData.suppliers.sort((a, b) => b.scores.total_weighted - a.scores.total_weighted);
+            analysisData.suppliers.forEach((s, i) => s.rank = i + 1);
+
+            renderRecommendation();
+            renderSummaryStats();
+            renderRankingTable();
+            renderScoreCharts();
+            renderCostAnalysis();
+            renderRiskCards();
+            renderContractTable();
+            renderColorLegend();
+        }
+
+        function renderWeightSliders() {
+            const labels = {
+                total_cost: 'Total Cost',
+                transit_time: 'Transit Time',
+                reliability: 'Reliability',
+                capacity: 'Capacity',
+                qualitative: 'Qualitative',
+                contract_flexibility: 'Contract Flexibility'
+            };
+
+            const container = document.getElementById('weightSliders');
+            container.innerHTML = '';
+
+            for (const [key, label] of Object.entries(labels)) {
+                const div = document.createElement('div');
+                div.className = 'weight-slider';
+                div.innerHTML = `
+                    <label>
+                        <span>${label}</span>
+                        <span id="weight-val-${key}">${currentWeights[key]}%</span>
+                    </label>
+                    <input type="range" min="0" max="100" value="${currentWeights[key]}"
+                           data-key="${key}" oninput="updateWeight(this)">
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        function updateWeight(slider) {
+            const key = slider.dataset.key;
+            currentWeights[key] = parseInt(slider.value);
+            document.getElementById(`weight-val-${key}`).textContent = slider.value + '%';
+            recalculateAndRender();
+        }
+
+        function renderRecommendation() {
+            const top = analysisData.suppliers[0];
+            const second = analysisData.suppliers[1];
+            const container = document.getElementById('recommendation');
+            const savings = second
+                ? (second.financials.total_annual_cost - top.financials.total_annual_cost)
+                : 0;
+
+            container.innerHTML = `
+                <h3>🏆 Recommended: ${top.name}</h3>
+                <p>
+                    <strong>Score: ${top.scores.total_weighted.toFixed(2)}</strong> |
+                    Annual Cost: $${top.financials.total_annual_cost.toLocaleString()} |
+                    On-Time: ${top.performance.on_time_pct}% |
+                    ${top.coverage.lanes_covered}/${top.coverage.total_lanes} lanes covered
+                    ${savings > 0 ? `| <strong>$${savings.toLocaleString()} cheaper</strong> than runner-up ${second.name}` : ''}
+                </p>
+                ${top.risk_flags.length > 0 ? `<p style="margin-top:0.5rem;color:var(--warning);">⚠ Note: ${top.risk_flags.join('; ')}</p>` : ''}
+            `;
+        }
+
+        function renderSummaryStats() {
+            const suppliers = analysisData.suppliers;
+            const avgCost = suppliers.reduce((s, x) => s + x.financials.total_annual_cost, 0) / suppliers.length;
+            const bestOTP = Math.max(...suppliers.map(x => x.performance.on_time_pct));
+            const totalRisks = suppliers.reduce((s, x) => s + x.risk_flags.length, 0);
+
+            document.getElementById('summaryStats').innerHTML = `
+                <div><div class="stat-value">${suppliers.length}</div><div class="stat-label">Suppliers Evaluated</div></div>
+                <div><div class="stat-value">${suppliers[0].coverage.total_lanes}</div><div class="stat-label">Lanes Analyzed</div></div>
+                <div><div class="stat-value">$${(avgCost/1000000).toFixed(2)}M</div><div class="stat-label">Avg Annual Cost</div></div>
+                <div><div class="stat-value">${bestOTP}%</div><div class="stat-label">Best On-Time %</div></div>
+                <div><div class="stat-value">${totalRisks}</div><div class="stat-label">Total Risk Flags</div></div>
+            `;
+        }
+
+        function renderRankingTable() {
+            const table = document.getElementById('rankingTable');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Rank</th><th>Supplier</th><th>Total Score</th>
+                        <th>Cost</th><th>Transit</th><th>Reliability</th>
+                        <th>Capacity</th><th>Qualitative</th><th>Contract</th>
+                        <th>Annual Cost</th><th>On-Time %</th><th>Coverage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${analysisData.suppliers.map(s => `
+                        <tr>
+                            <td><span class="rank-badge rank-${s.rank <= 3 ? s.rank : 'other'}">${s.rank}</span></td>
+                            <td><strong>${s.name}</strong></td>
+                            <td>
+                                <strong>${s.scores.total_weighted.toFixed(1)}</strong>
+                                <div class="score-bar"><div class="score-bar-fill" style="width:${s.scores.total_weighted}%;background:${COLORS[(s.rank-1) % COLORS.length]}"></div></div>
+                            </td>
+                            <td>${s.scores.cost.toFixed(1)}</td>
+                            <td>${s.scores.transit.toFixed(1)}</td>
+                            <td>${s.scores.reliability.toFixed(1)}</td>
+                            <td>${s.scores.capacity.toFixed(1)}</td>
+                            <td>${s.scores.qualitative.toFixed(1)}</td>
+                            <td>${s.scores.contract_flexibility.toFixed(1)}</td>
+                            <td>$${s.financials.total_annual_cost.toLocaleString()}</td>
+                            <td>${s.performance.on_time_pct}%</td>
+                            <td>${s.coverage.lanes_covered}/${s.coverage.total_lanes}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+        }
+
+        function renderBarChart(containerId, suppliers, scoreKey) {
+            const container = document.getElementById(containerId);
+            const maxVal = Math.max(...suppliers.map(s => {
+                if (scoreKey === 'total_annual_cost') return s.financials.total_annual_cost;
+                return s.scores[scoreKey];
+            }));
+
+            container.innerHTML = suppliers.map((s, i) => {
+                const val = scoreKey === 'total_annual_cost'
+                    ? s.financials.total_annual_cost
+                    : s.scores[scoreKey];
+                const pct = maxVal > 0 ? (val / maxVal * 100) : 0;
+                const color = COLORS[(s.rank - 1) % COLORS.length];
+                const label = scoreKey === 'total_annual_cost'
+                    ? `$${(val/1000000).toFixed(2)}M`
+                    : val.toFixed(1);
+                return `
+                    <div class="bar-row">
+                        <div class="bar-label">${s.name}</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width:${pct}%;background:${color};">${label}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderScoreCharts() {
+            const suppliers = analysisData.suppliers;
+            renderBarChart('totalScoreChart', suppliers, 'total_weighted');
+            renderBarChart('costScoreChart', suppliers, 'cost');
+            renderBarChart('transitScoreChart', suppliers, 'transit');
+            renderBarChart('reliabilityScoreChart', suppliers, 'reliability');
+            renderBarChart('capacityScoreChart', suppliers, 'capacity');
+            renderBarChart('qualitativeScoreChart', suppliers, 'qualitative');
+        }
+
+        function renderCostAnalysis() {
+            renderBarChart('costComparisonChart', analysisData.suppliers, 'total_annual_cost');
+
+            // Lane cost table
+            const allLanes = new Set();
+            analysisData.suppliers.forEach(s => {
+                Object.keys(s.financials.cost_by_lane).forEach(l => allLanes.add(l));
+            });
+
+            const lanes = [...allLanes].sort();
+            const container = document.getElementById('laneCostTable');
+
+            let html = '<table class="ranking-table"><thead><tr><th>Lane</th>';
+            analysisData.suppliers.forEach(s => { html += `<th>${s.name} ($/kg)</th>`; });
+            html += '<th>Best Rate</th><th>Spread</th></tr></thead><tbody>';
+
+            for (const lane of lanes) {
+                html += `<tr><td><strong>${lane}</strong></td>`;
+                let rates = [];
+                analysisData.suppliers.forEach(s => {
+                    const data = s.financials.cost_by_lane[lane];
+                    if (data) {
+                        html += `<td>$${data.all_in_rate.toFixed(2)}</td>`;
+                        rates.push(data.all_in_rate);
+                    } else {
+                        html += '<td style="color:var(--danger);">N/A</td>';
+                    }
+                });
+                if (rates.length > 0) {
+                    const minRate = Math.min(...rates);
+                    const maxRate = Math.max(...rates);
+                    const spread = ((maxRate - minRate) / minRate * 100).toFixed(1);
+                    html += `<td style="color:var(--success);font-weight:600;">$${minRate.toFixed(2)}</td>`;
+                    html += `<td>${spread}%</td>`;
+                } else {
+                    html += '<td>-</td><td>-</td>';
+                }
+                html += '</tr>';
+            }
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderRiskCards() {
+            const container = document.getElementById('riskCards');
+            container.innerHTML = analysisData.suppliers.map((s, i) => {
+                const riskLevel = s.risk_flags.length === 0 ? 'low' : s.risk_flags.length <= 2 ? 'medium' : 'high';
+                const riskLabel = riskLevel === 'low' ? '✅ Low Risk' : riskLevel === 'medium' ? '⚠️ Medium Risk' : '🔴 High Risk';
+
+                return `
+                    <div class="card">
+                        <div class="card-title">${s.name}</div>
+                        <span class="risk-badge risk-${riskLevel}">${riskLabel}</span>
+                        <div style="margin-top:0.75rem;">
+                            ${s.risk_flags.length > 0
+                                ? s.risk_flags.map(f => `<p style="font-size:0.85rem;margin:0.25rem 0;">⚠ ${f}</p>`).join('')
+                                : '<p style="font-size:0.85rem;color:var(--success);">No significant risks identified</p>'
+                            }
+                        </div>
+                        <div style="margin-top:0.75rem;font-size:0.8rem;color:var(--text-secondary);">
+                            OTP: ${s.performance.on_time_pct}% | Damage: ${s.performance.damage_rate_pct}% | Claims: ${s.performance.claims_ratio_pct}%
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderContractTable() {
+            const table = document.getElementById('contractTable');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Supplier</th><th>Min Volume (kg)</th><th>Rate Escalation Cap</th>
+                        <th>Contract Term</th><th>Exit Notice</th><th>Contract Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${analysisData.suppliers.map(s => `
+                        <tr>
+                            <td><strong>${s.name}</strong></td>
+                            <td>${s.contract.min_volume_commitment_kg.toLocaleString()} kg</td>
+                            <td>${s.contract.rate_escalation_cap_pct}%</td>
+                            <td>${s.contract.term_months} months</td>
+                            <td>${s.contract.exit_notice_days} days</td>
+                            <td><strong>${s.scores.contract_flexibility.toFixed(1)}</strong></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+        }
+
+        function renderColorLegend() {
+            const container = document.getElementById('colorLegend');
+            container.innerHTML = analysisData.suppliers.map((s, i) =>
+                `<div class="color-legend">
+                    <div class="color-dot" style="background:${COLORS[(s.rank-1) % COLORS.length]}"></div>
+                    ${s.name}
+                </div>`
+            ).join('');
+        }
+
+        // Embedded demo data (matches analyze_bids.py sample output)
+        function getDemoData() {
+            return {
+                "generated_at": "Demo Data",
+                "suppliers": [
+                    {
+                        "rank": 1,
+                        "name": "AirGlobal Express",
+                        "scores": { "total_weighted": 0, "cost": 61.58, "transit": 100.0, "reliability": 85.6, "capacity": 77.6, "qualitative": 83.33, "contract_flexibility": 43.33 },
+                        "financials": { "total_annual_cost": 12082193.50, "cost_by_lane": {
+                            "JFK-LHR (500kg)": {"all_in_rate": 5.13, "annual_cost": 1200510.00, "shipments": 520},
+                            "JFK-LHR (1000kg)": {"all_in_rate": 4.72, "annual_cost": 1748340.00, "shipments": 390},
+                            "JFK-LHR (2000kg)": {"all_in_rate": 4.31, "annual_cost": 2016480.00, "shipments": 260},
+                            "JFK-FRA (500kg)": {"all_in_rate": 5.48, "annual_cost": 1093632.00, "shipments": 416},
+                            "JFK-FRA (1000kg)": {"all_in_rate": 5.01, "annual_cost": 1437072.00, "shipments": 312},
+                            "JFK-FRA (2000kg)": {"all_in_rate": 4.60, "annual_cost": 1769200.00, "shipments": 208},
+                            "LAX-NRT (500kg)": {"all_in_rate": 6.19, "annual_cost": 1063298.80, "shipments": 364},
+                            "LAX-NRT (1000kg)": {"all_in_rate": 5.67, "annual_cost": 1485518.40, "shipments": 273},
+                            "LAX-NRT (2000kg)": {"all_in_rate": 5.13, "annual_cost": 1773942.00, "shipments": 182}
+                        }},
+                        "performance": { "weighted_transit_days": 1.56, "on_time_pct": 96.2, "damage_rate_pct": 0.3, "claims_ratio_pct": 0.5 },
+                        "capacity": { "total_weekly_kg": 125000, "scalability_score": 9 },
+                        "qualitative": { "financial_stability": 9, "technology": 8, "customer_service": 8 },
+                        "contract": { "min_volume_commitment_kg": 10000, "rate_escalation_cap_pct": 3.5, "term_months": 24, "exit_notice_days": 90 },
+                        "coverage": { "lanes_covered": 9, "total_lanes": 9 },
+                        "risk_flags": []
+                    },
+                    {
+                        "rank": 2,
+                        "name": "CargoMax International",
+                        "scores": { "total_weighted": 0, "cost": 15.17, "transit": 100.0, "reliability": 91.3, "capacity": 100.0, "qualitative": 86.67, "contract_flexibility": 0.0 },
+                        "financials": { "total_annual_cost": 13285671.60, "cost_by_lane": {
+                            "JFK-LHR (500kg)": {"all_in_rate": 5.23, "annual_cost": 1222380.00, "shipments": 520},
+                            "JFK-LHR (1000kg)": {"all_in_rate": 4.76, "annual_cost": 1764540.00, "shipments": 390},
+                            "JFK-LHR (2000kg)": {"all_in_rate": 4.35, "annual_cost": 2035800.00, "shipments": 260},
+                            "JFK-FRA (500kg)": {"all_in_rate": 5.58, "annual_cost": 1113580.80, "shipments": 416},
+                            "JFK-FRA (1000kg)": {"all_in_rate": 5.10, "annual_cost": 1462368.00, "shipments": 312},
+                            "JFK-FRA (2000kg)": {"all_in_rate": 4.63, "annual_cost": 1781056.00, "shipments": 208},
+                            "LAX-NRT (500kg)": {"all_in_rate": 6.28, "annual_cost": 1078929.60, "shipments": 364},
+                            "LAX-NRT (1000kg)": {"all_in_rate": 5.75, "annual_cost": 1506600.00, "shipments": 273},
+                            "LAX-NRT (2000kg)": {"all_in_rate": 5.22, "annual_cost": 1806516.00, "shipments": 182}
+                        }},
+                        "performance": { "weighted_transit_days": 1.5, "on_time_pct": 97.8, "damage_rate_pct": 0.2, "claims_ratio_pct": 0.3 },
+                        "capacity": { "total_weekly_kg": 155000, "scalability_score": 10 },
+                        "qualitative": { "financial_stability": 10, "technology": 7, "customer_service": 9 },
+                        "contract": { "min_volume_commitment_kg": 15000, "rate_escalation_cap_pct": 3.0, "term_months": 36, "exit_notice_days": 120 },
+                        "coverage": { "lanes_covered": 9, "total_lanes": 9 },
+                        "risk_flags": ["Long contract term: 36 months", "High min volume commitment: 15000 kg"]
+                    },
+                    {
+                        "rank": 3,
+                        "name": "PrimeAir Logistics",
+                        "scores": { "total_weighted": 0, "cost": 48.85, "transit": 50.0, "reliability": 83.5, "capacity": 67.43, "qualitative": 80.0, "contract_flexibility": 43.33 },
+                        "financials": { "total_annual_cost": 12412605.40, "cost_by_lane": {
+                            "JFK-LHR (500kg)": {"all_in_rate": 4.96, "annual_cost": 1159920.00, "shipments": 520},
+                            "JFK-LHR (1000kg)": {"all_in_rate": 4.54, "annual_cost": 1684170.00, "shipments": 390},
+                            "JFK-LHR (2000kg)": {"all_in_rate": 4.18, "annual_cost": 1956240.00, "shipments": 260},
+                            "JFK-FRA (500kg)": {"all_in_rate": 5.32, "annual_cost": 1061836.80, "shipments": 416},
+                            "JFK-FRA (1000kg)": {"all_in_rate": 4.90, "annual_cost": 1404480.00, "shipments": 312},
+                            "JFK-FRA (2000kg)": {"all_in_rate": 4.48, "annual_cost": 1723584.00, "shipments": 208},
+                            "LAX-NRT (500kg)": {"all_in_rate": 6.04, "annual_cost": 1037419.20, "shipments": 364},
+                            "LAX-NRT (1000kg)": {"all_in_rate": 5.56, "annual_cost": 1458288.00, "shipments": 273},
+                            "LAX-NRT (2000kg)": {"all_in_rate": 5.01, "annual_cost": 1733466.00, "shipments": 182}
+                        }},
+                        "performance": { "weighted_transit_days": 2.0, "on_time_pct": 95.0, "damage_rate_pct": 0.4, "claims_ratio_pct": 0.6 },
+                        "capacity": { "total_weekly_kg": 140000, "scalability_score": 8 },
+                        "qualitative": { "financial_stability": 8, "technology": 8, "customer_service": 8 },
+                        "contract": { "min_volume_commitment_kg": 12000, "rate_escalation_cap_pct": 3.5, "term_months": 24, "exit_notice_days": 90 },
+                        "coverage": { "lanes_covered": 9, "total_lanes": 9 },
+                        "risk_flags": []
+                    },
+                    {
+                        "rank": 4,
+                        "name": "SkyFreight Solutions",
+                        "scores": { "total_weighted": 0, "cost": 100.0, "transit": 0.0, "reliability": 76.75, "capacity": 52.0, "qualitative": 76.67, "contract_flexibility": 76.67 },
+                        "financials": { "total_annual_cost": 11489035.20, "cost_by_lane": {
+                            "JFK-LHR (500kg)": {"all_in_rate": 4.91, "annual_cost": 1148580.00, "shipments": 520},
+                            "JFK-LHR (1000kg)": {"all_in_rate": 4.50, "annual_cost": 1669500.00, "shipments": 390},
+                            "JFK-LHR (2000kg)": {"all_in_rate": 4.14, "annual_cost": 1937520.00, "shipments": 260},
+                            "JFK-FRA (500kg)": {"all_in_rate": 5.27, "annual_cost": 1051852.80, "shipments": 416},
+                            "JFK-FRA (1000kg)": {"all_in_rate": 4.86, "annual_cost": 1393344.00, "shipments": 312},
+                            "JFK-FRA (2000kg)": {"all_in_rate": 4.43, "annual_cost": 1705024.00, "shipments": 208},
+                            "LAX-NRT (500kg)": {"all_in_rate": 5.94, "annual_cost": 1021118.40, "shipments": 364},
+                            "LAX-NRT (1000kg)": {"all_in_rate": 5.48, "annual_cost": 1435392.00, "shipments": 273},
+                            "LAX-NRT (2000kg)": {"all_in_rate": 4.98, "annual_cost": 1724904.00, "shipments": 182}
+                        }},
+                        "performance": { "weighted_transit_days": 2.5, "on_time_pct": 93.5, "damage_rate_pct": 0.5, "claims_ratio_pct": 0.8 },
+                        "capacity": { "total_weekly_kg": 110000, "scalability_score": 8 },
+                        "qualitative": { "financial_stability": 7, "technology": 9, "customer_service": 7 },
+                        "contract": { "min_volume_commitment_kg": 8000, "rate_escalation_cap_pct": 4.0, "term_months": 12, "exit_notice_days": 60 },
+                        "coverage": { "lanes_covered": 9, "total_lanes": 9 },
+                        "risk_flags": []
+                    },
+                    {
+                        "rank": 5,
+                        "name": "SwiftCargo Air",
+                        "scores": { "total_weighted": 0, "cost": 85.24, "transit": 0.0, "reliability": 62.55, "capacity": 24.0, "qualitative": 60.0, "contract_flexibility": 100.0 },
+                        "financials": { "total_annual_cost": 11871916.80, "cost_by_lane": {
+                            "JFK-LHR (500kg)": {"all_in_rate": 4.84, "annual_cost": 1131480.00, "shipments": 520},
+                            "JFK-LHR (1000kg)": {"all_in_rate": 4.41, "annual_cost": 1636110.00, "shipments": 390},
+                            "JFK-LHR (2000kg)": {"all_in_rate": 4.04, "annual_cost": 1890720.00, "shipments": 260},
+                            "JFK-FRA (500kg)": {"all_in_rate": 5.08, "annual_cost": 1013760.00, "shipments": 416},
+                            "JFK-FRA (1000kg)": {"all_in_rate": 4.67, "annual_cost": 1339872.00, "shipments": 312},
+                            "JFK-FRA (2000kg)": {"all_in_rate": 4.24, "annual_cost": 1630336.00, "shipments": 208},
+                            "LAX-NRT (500kg)": {"all_in_rate": 5.81, "annual_cost": 998432.80, "shipments": 364},
+                            "LAX-NRT (1000kg)": {"all_in_rate": 5.32, "annual_cost": 1394928.00, "shipments": 273},
+                            "LAX-NRT (2000kg)": {"all_in_rate": 4.84, "annual_cost": 1675248.00, "shipments": 182}
+                        }},
+                        "performance": { "weighted_transit_days": 3.0, "on_time_pct": 90.1, "damage_rate_pct": 0.7, "claims_ratio_pct": 1.2 },
+                        "capacity": { "total_weekly_kg": 75000, "scalability_score": 6 },
+                        "qualitative": { "financial_stability": 6, "technology": 6, "customer_service": 6 },
+                        "contract": { "min_volume_commitment_kg": 5000, "rate_escalation_cap_pct": 5.0, "term_months": 12, "exit_notice_days": 30 },
+                        "coverage": { "lanes_covered": 9, "total_lanes": 9 },
+                        "risk_flags": ["Low on-time performance: 90.1%", "High damage rate: 0.7%", "High claims ratio: 1.2%", "High rate escalation cap: 5.0%", "Low scalability score: 6/10"]
+                    }
+                ]
+            };
+        }
+    </script>
+</body>
+</html>
