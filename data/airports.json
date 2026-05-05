@@ -1,0 +1,12 @@
+[
+  {"iata": "JFK", "name": "John F. Kennedy Intl", "city": "New York", "country": "US", "coord": {"lat": 40.64, "lon": -73.78}, "region": "NA-East"},
+  {"iata": "LAX", "name": "Los Angeles Intl", "city": "Los Angeles", "country": "US", "coord": {"lat": 33.94, "lon": -118.41}, "region": "NA-West"},
+  {"iata": "LHR", "name": "London Heathrow", "city": "London", "country": "UK", "coord": {"lat": 51.47, "lon": -0.45}, "region": "EU-West"},
+  {"iata": "HND", "name": "Tokyo Haneda", "city": "Tokyo", "country": "JP", "coord": {"lat": 35.55, "lon": 139.78}, "region": "APAC-North"},
+  {"iata": "SIN", "name": "Singapore Changi", "city": "Singapore", "country": "SG", "coord": {"lat": 1.36, "lon": 103.99}, "region": "APAC-SE"},
+  {"iata": "DXB", "name": "Dubai Intl", "city": "Dubai", "country": "AE", "coord": {"lat": 25.25, "lon": 55.36}, "region": "MEA"},
+  {"iata": "FRA", "name": "Frankfurt Airport", "city": "Frankfurt", "country": "DE", "coord": {"lat": 50.04, "lon": 8.56}, "region": "EU-Central"},
+  {"iata": "CDG", "name": "Paris Charles de Gaulle", "city": "Paris", "country": "FR", "coord": {"lat": 49.01, "lon": 2.55}, "region": "EU-West"},
+  {"iata": "PVG", "name": "Shanghai Pudong", "city": "Shanghai", "country": "CN", "coord": {"lat": 31.14, "lon": 121.81}, "region": "APAC-East"},
+  {"iata": "HKG", "name": "Hong Kong Intl", "city": "Hong Kong", "country": "HK", "coord": {"lat": 22.31, "lon": 113.92}, "region": "APAC-East"}
+]

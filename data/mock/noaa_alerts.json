@@ -1,0 +1,48 @@
+{
+  "features": [
+    {
+      "properties": {
+        "event": "Severe Dust Storm",
+        "severity": "Severe",
+        "headline": "Severe dust storm reducing visibility, Gulf of Suez",
+        "areaDesc": "Red Sea; Suez",
+        "effective": "2026-04-10T10:00:00Z",
+        "expires": "2026-04-11T06:00:00Z",
+        "url": "https://example.org/alerts/noaa/mock-1"
+      }
+    },
+    {
+      "properties": {
+        "event": "Winter Weather Advisory",
+        "severity": "Moderate",
+        "headline": "Low ceilings and freezing rain, NYC metro",
+        "areaDesc": "NA-East; New York",
+        "effective": "2026-04-10T04:00:00Z",
+        "expires": "2026-04-10T22:00:00Z",
+        "url": "https://example.org/alerts/noaa/mock-2"
+      }
+    },
+    {
+      "properties": {
+        "event": "Tropical Storm Warning",
+        "severity": "Extreme",
+        "headline": "Tropical storm approaching Strait of Malacca",
+        "areaDesc": "Malacca; Singapore; Indonesia",
+        "effective": "2026-04-10T00:00:00Z",
+        "expires": "2026-04-12T12:00:00Z",
+        "url": "https://example.org/alerts/noaa/mock-3"
+      }
+    },
+    {
+      "properties": {
+        "event": "Gale Warning",
+        "severity": "Moderate",
+        "headline": "Gale force winds across the English Channel",
+        "areaDesc": "English Channel; Dover",
+        "effective": "2026-04-10T06:00:00Z",
+        "expires": "2026-04-11T00:00:00Z",
+        "url": "https://example.org/alerts/noaa/mock-4"
+      }
+    }
+  ]
+}

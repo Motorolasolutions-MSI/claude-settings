@@ -1,0 +1,46 @@
+{
+  "articles": [
+    {
+      "title": "Red Sea shipping reroutes amid renewed tensions",
+      "url": "https://example.org/news/red-sea-tensions",
+      "seendate": "20260410T120000Z",
+      "tone": -6.2,
+      "region_tag": "Red Sea"
+    },
+    {
+      "title": "Suez Canal authority warns of backlog after storm",
+      "url": "https://example.org/news/suez-backlog",
+      "seendate": "20260410T090000Z",
+      "tone": -4.1,
+      "region_tag": "Suez"
+    },
+    {
+      "title": "Bab-el-Mandeb: armed incident reported near Yemeni coast",
+      "url": "https://example.org/news/bab-el-mandeb-incident",
+      "seendate": "20260410T060000Z",
+      "tone": -8.3,
+      "region_tag": "Yemen"
+    },
+    {
+      "title": "Panama Canal draft restrictions ease as rains return",
+      "url": "https://example.org/news/panama-canal-rains",
+      "seendate": "20260410T030000Z",
+      "tone": 2.1,
+      "region_tag": "Panama"
+    },
+    {
+      "title": "Dockworkers in France extend strike into third week",
+      "url": "https://example.org/news/france-strike",
+      "seendate": "20260410T110000Z",
+      "tone": -5.0,
+      "region_tag": "France"
+    },
+    {
+      "title": "Malacca Strait sees elevated piracy advisories",
+      "url": "https://example.org/news/malacca-piracy",
+      "seendate": "20260410T020000Z",
+      "tone": -4.8,
+      "region_tag": "Malacca"
+    }
+  ]
+}
