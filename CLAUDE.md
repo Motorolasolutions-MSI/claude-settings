@@ -10,9 +10,30 @@ This repository stores shared Claude Code configuration, settings, and conventio
 
 ```
 claude-settings/
-├── CLAUDE.md          # This file — project conventions and AI assistant guidance
-└── (future files)     # Settings, hooks, and configuration as needed
+├── CLAUDE.md                  # Project conventions and AI assistant guidance
+├── README.md                  # Weather God user-facing docs
+├── pyproject.toml             # Python package metadata for Weather God
+├── .claude/settings.json      # Project-level Claude Code config (permissions, hooks)
+├── .devcontainer/             # Dev container spec
+├── data/                      # Static airports/lanes seed data + offline mock fixtures
+├── src/weather_god/           # Weather God CLI source
+└── tests/                     # Pytest suite (runs without network)
 ```
+
+## Weather God app
+
+The repo also hosts **Weather God**, a Python CLI that produces a global
+transit-risk report. Full usage is in `README.md`. Quick reference:
+
+```bash
+pip install -e ".[dev]"   # install in editable mode with test deps
+weather-god --mock        # offline run with bundled fixtures
+weather-god --mock --json # machine-readable output
+pytest -q                 # full test suite, no network required
+```
+
+Python 3.10+ required. The dev container's `postCreateCommand` runs the install
+automatically.
 
 ## Development Workflow
 
