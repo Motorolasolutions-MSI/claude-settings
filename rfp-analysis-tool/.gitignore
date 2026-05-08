@@ -1,0 +1,4 @@
+# Generated output files (regenerate with: python3 analyze_bids.py)
+output/*.csv
+output/*.json
+!output/.gitkeep

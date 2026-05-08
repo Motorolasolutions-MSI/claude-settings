@@ -1,0 +1,29 @@
+{
+  "description": "Evaluation criteria weights for heavyweight air RFP bid analysis. Weights must sum to 1.0.",
+  "weights": {
+    "total_cost": {
+      "weight": 0.35,
+      "description": "All-in cost per kg including base rate, fuel, security, and peak surcharges"
+    },
+    "transit_time": {
+      "weight": 0.15,
+      "description": "Average transit time (midpoint of min/max days)"
+    },
+    "reliability": {
+      "weight": 0.15,
+      "description": "Composite of on-time %, damage rate, and claims ratio"
+    },
+    "capacity": {
+      "weight": 0.10,
+      "description": "Weekly capacity in kg and scalability score"
+    },
+    "qualitative": {
+      "weight": 0.15,
+      "description": "Financial stability, technology, customer service scores"
+    },
+    "contract_flexibility": {
+      "weight": 0.10,
+      "description": "Contract terms: minimum commitment, escalation cap, term length, exit notice"
+    }
+  }
+}
