@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "description": "A plugin marketplace hosting installable agent plugins for AWS.",
+    "version": "1.0.0"
+  },
+  "name": "agent-toolkit-for-aws",
+  "owner": {
+    "name": "Amazon Web Services"
+  },
+  "plugins": [
+    {
+      "category": "cloud",
+      "description": "Build, deploy, and operate applications on AWS. Skills to author infrastructure-as-code, use core services, and complete common tasks.",
+      "keywords": [
+        "aws"
+      ],
+      "name": "aws-core",
+      "source": "./plugins/aws-core",
+      "version": "1.0.0"
+    },
+    {
+      "category": "cloud",
+      "description": "Build, deploy, and operate AI agents on AWS. Skills for scaffolding agents with Amazon Bedrock AgentCore, connecting tools, memory, policies, evaluation, debugging, and production hardening.",
+      "keywords": [
+        "aws"
+      ],
+      "name": "aws-agents",
+      "source": "./plugins/aws-agents",
+      "version": "1.0.0"
+    },
+    {
+      "category": "cloud",
+      "description": "Data lake, analytics, and ETL workflows with S3 Tables, AWS Glue, and Athena.",
+      "keywords": [
+        "aws",
+        "analytics",
+        "data-lake",
+        "athena",
+        "glue",
+        "s3-tables",
+        "s3-vectors",
+        "iceberg",
+        "etl"
+      ],
+      "name": "aws-data-analytics",
+      "source": "./plugins/aws-data-analytics",
+      "version": "1.0.0"
+    }
+  ]
+}

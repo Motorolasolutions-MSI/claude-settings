@@ -1,0 +1,87 @@
+{
+  "name": "json-server",
+  "displayName": "JSON Server",
+  "description": "Easy to use json server, to create a http server from a json file.",
+  "version": "0.0.4",
+  "publisher": "sarthikbhat",
+  "author": {
+    "name": "Sarthik Bhat",
+    "url": "https://github.com/sarthikbhat"
+  },
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Testing",
+    "Visualization",
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "json preview",
+    "live preview",
+    "live reload",
+    "server",
+    "open in browser",
+    "multi-root ready"
+  ],
+  "preview": true,
+  "galleryBanner": {
+    "color": "##F2F2F2",
+    "theme": "light"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "license": "MIT",
+  "icon": "images/Frame.png",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sarthikbhat/json-server-vscode.git"
+  },
+  "scripts": {
+    "package": "vsce package",
+    "deploy": "vsce publish -p",
+    "start": "nodemon src/server/server.ts",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package:watch": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.0",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.7",
+    "@types/vscode": "^1.91.0",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.11.0",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0",
+    "concurrently": "^9.1.2",
+    "copy-webpack-plugin": "^12.0.2",
+    "eslint": "^8.57.0",
+    "nodemon": "^3.1.9",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "vsce": "^2.15.0",
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

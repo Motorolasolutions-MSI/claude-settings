@@ -1,0 +1,10 @@
+lane_origin,lane_destination,weight_break_kg,annual_shipments,avg_weight_per_shipment_kg
+JFK,LHR,500,520,450
+JFK,LHR,1000,390,950
+JFK,LHR,2000,260,1800
+JFK,FRA,500,416,480
+JFK,FRA,1000,312,920
+JFK,FRA,2000,208,1850
+LAX,NRT,500,364,470
+LAX,NRT,1000,273,960
+LAX,NRT,2000,182,1900
