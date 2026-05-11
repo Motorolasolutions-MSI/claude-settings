@@ -1,0 +1,6 @@
+{
+  "allowedHttpHookUrls": [
+    "https://hooks.example.com/*",
+    "http://localhost:*"
+  ]
+}
