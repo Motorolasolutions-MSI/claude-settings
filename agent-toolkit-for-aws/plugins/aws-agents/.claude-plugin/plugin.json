@@ -1,0 +1,30 @@
+{
+  "author": {
+    "name": "Amazon Web Services"
+  },
+  "description": "Build, deploy, and operate AI agents on AWS. Skills for scaffolding agents with Amazon Bedrock AgentCore, connecting tools, memory, policies, evaluation, debugging, and production hardening.",
+  "homepage": "https://github.com/aws/agent-toolkit-for-aws",
+  "keywords": [
+    "aws",
+    "agentcore",
+    "bedrock",
+    "agents",
+    "deploy",
+    "debug",
+    "memory",
+    "gateway",
+    "policy",
+    "cedar",
+    "evaluation",
+    "strands",
+    "langgraph",
+    "mcp",
+    "a2a"
+  ],
+  "license": "Apache-2.0",
+  "name": "aws-agents",
+  "repository": "https://github.com/aws/agent-toolkit-for-aws",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "version": "1.0.0"
+}
