@@ -1,10 +1,6 @@
 # CLAUDE.md — claude-settings
 
-This repository stores shared Claude Code configuration, settings, and conventions for the `sambloomberg-sketch` organization.
-
-## Repository Purpose
-
-`claude-settings` is a centralized configuration repository for managing Claude Code preferences, prompt guidelines, and project-level settings that can be shared across multiple repositories and team members.
+This repository serves a dual purpose: it is both a centralized Claude Code configuration store for the `sambloomberg-sketch` organization **and** the home of the `weather-god` Python CLI — a global transit-risk report tool for logistics and supply-chain planners.
 
 ## Repository Structure
 
@@ -37,37 +33,41 @@ automatically.
 
 ## Development Workflow
 
-- **Branch naming**: Feature branches follow the pattern `claude/<description>-<id>` (e.g., `claude/add-claude-documentation-lKPvI`)
-- **Commits**: Use clear, descriptive commit messages that explain the "why" behind changes
-- **Push**: Always push with `git push -u origin <branch-name>`
+- **Branch naming**: `claude/<description>-<id>` (e.g., `claude/add-feature-xYzAb`)
+- **Commits**: Descriptive messages explaining the "why"; one logical change per commit
+- **Push**: `git push -u origin <branch-name>`
+- **PR**: Open a draft PR after pushing; request review before merging to `main`
 
 ## Key Conventions
 
-### Configuration Files
+### Adding a new data source
 
-- Keep configuration files well-documented with inline comments where applicable
-- Use JSON for structured settings (e.g., `settings.json`)
-- Validate configuration changes before committing
+1. Create `src/weather_god/sources/<name>.py` implementing a `fetch(*, mock, timeout)` function that returns `(list[Disruption], SourceStatus)`.
+2. Add mock fixture JSON under `data/mock/`.
+3. Add endpoint URL / constants to `config.py`.
+4. Wire it into `cli.py` alongside the existing sources.
+5. Add tests under `tests/test_sources_mock.py` or a new file.
 
-### CLAUDE.md Files
+### Code style
+
+- `from __future__ import annotations` at the top of every module
+- Prefer clarity over cleverness; follow existing patterns
+- No unnecessary abstractions or speculative features
+- Pure functions (no side effects) for scoring and rendering — keep I/O at the edges
+- Use `safe_get()` from `sources/base.py` for all outbound HTTP — it never raises
+
+### Configuration files
+
+- All tunable constants belong in `config.py`; never hardcode URLs or weights inline
+- Data files (`lanes.json`, `airports.json`) use plain JSON with no trailing commas
+- Validate config changes by running `weather-god --mock` before committing
+
+### CLAUDE.md files
 
 When writing or updating `CLAUDE.md` files (for this or other repos):
 
-- Start with a brief description of the repository's purpose
-- Document the project structure and key directories
-- Include build, test, and lint commands
-- Note code style conventions and patterns
-- Keep instructions actionable and concise — avoid redundant or obvious guidance
-- Update the file as the project evolves
-
-### Code Style
-
-- Prefer clarity over cleverness
-- Follow existing patterns and conventions in each file
-- Do not add unnecessary abstractions or speculative features
-
-## Contributing
-
-1. Create a feature branch from `main`
-2. Make changes and commit with descriptive messages
-3. Push the branch and open a pull request for review
+- Start with the repository's actual purpose
+- Document real structure — update as files are added/removed
+- Include working install, run, and test commands
+- Note architectural decisions and non-obvious conventions
+- Keep instructions actionable and concise
