@@ -6,103 +6,30 @@ This repository serves a dual purpose: it is both a centralized Claude Code conf
 
 ```
 claude-settings/
-├── CLAUDE.md                         # This file — project conventions and AI assistant guidance
-├── README.md                         # User-facing docs for weather-god CLI
-├── pyproject.toml                    # Python package definition (weather-god)
-├── .devcontainer/devcontainer.json   # Dev container config (universal:2 image)
-├── data/
-│   ├── airports.json                 # Monitored airport definitions
-│   ├── lanes.json                    # Shipping lane definitions
-│   └── mock/
-│       ├── faa_status.json           # Offline fixture for FAA source
-│       ├── gdelt_events.json         # Offline fixture for GDELT source
-│       └── noaa_alerts.json          # Offline fixture for NOAA source
-├── src/weather_god/
-│   ├── __init__.py
-│   ├── __main__.py
-│   ├── cli.py                        # Argparse entry point, orchestrates fetch + render
-│   ├── config.py                     # All constants: URLs, weights, delay bands, paths
-│   ├── mock_data.py                  # Mock fixture loader
-│   ├── models.py                     # Frozen dataclasses: Lane, Airport, Disruption, reports
-│   ├── render.py                     # Markdown and JSON output formatters
-│   ├── scoring.py                    # Pure scoring functions (no I/O)
-│   ├── seed.py                       # Loads lanes.json / airports.json into model objects
-│   └── sources/
-│       ├── __init__.py
-│       ├── base.py                   # safe_get() helper + SourceStatus
-│       ├── faa.py                    # FAA ASWS adapter
-│       ├── gdelt.py                  # GDELT 2.0 doc adapter
-│       └── noaa.py                   # NOAA/NWS alerts adapter
-└── tests/
-    ├── conftest.py                   # Shared fixtures (Lane, Airport, Disruption instances)
-    ├── test_cli.py
-    ├── test_render.py
-    ├── test_scoring.py
-    ├── test_seed.py
-    └── test_sources_mock.py
+├── CLAUDE.md                  # Project conventions and AI assistant guidance
+├── README.md                  # Weather God user-facing docs
+├── pyproject.toml             # Python package metadata for Weather God
+├── .claude/settings.json      # Project-level Claude Code config (permissions, hooks)
+├── .devcontainer/             # Dev container spec
+├── data/                      # Static airports/lanes seed data + offline mock fixtures
+├── src/weather_god/           # Weather God CLI source
+└── tests/                     # Pytest suite (runs without network)
 ```
 
-## Install & Run
+## Weather God app
+
+The repo also hosts **Weather God**, a Python CLI that produces a global
+transit-risk report. Full usage is in `README.md`. Quick reference:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"        # includes pytest + pytest-mock
-
-# Live report (falls back to mock if a source is unreachable)
-weather-god
-
-# Fully offline / deterministic
-weather-god --mock
-
-# JSON output
-weather-god --mock --json | python -m json.tool
-
-# Filter by region or category
-weather-god --lanes-only --region "Red Sea"
-weather-god --airports-only
+pip install -e ".[dev]"   # install in editable mode with test deps
+weather-god --mock        # offline run with bundled fixtures
+weather-god --mock --json # machine-readable output
+pytest -q                 # full test suite, no network required
 ```
 
-## Tests
-
-```bash
-pytest -q           # all tests, no network access required
-```
-
-All tests run without network access. Fixtures live in `tests/conftest.py`.
-
-## Architecture
-
-### Data flow
-
-```
-seed.py (lanes.json / airports.json)
-    → cli.py fetches each source in sequence
-        sources/{noaa,faa,gdelt}.py  →  list[Disruption] + SourceStatus
-    → scoring.py tags disruptions to lanes/airports, computes risk scores
-    → render.py formats GlobalReport as markdown or JSON
-```
-
-### Key design decisions
-
-- **Sources are independent**: each returns `(list[Disruption], SourceStatus)` and handles its own mock fallback — the CLI never crashes if a source fails.
-- **Scoring is pure**: `scoring.py` has no I/O and is fully unit-testable.
-- **All constants in `config.py`**: weights, delay bands, API endpoints, paths. Never hardcode these elsewhere.
-- **Frozen dataclasses** for `Lane`, `Airport`, `Disruption` — they are value objects passed through the pipeline unchanged.
-
-### Scoring
-
-```
-WEIGHTS = {"weather": 0.45, "airport_ops": 0.25, "geopolitical": 0.30}
-```
-
-| Score  | Delay band  |
-|--------|-------------|
-| 0–19   | 0 days      |
-| 20–39  | +0–1 days   |
-| 40–59  | +1–3 days   |
-| 60–79  | +3–7 days   |
-| 80–100 | +7–14 days  |
+Python 3.10+ required. The dev container's `postCreateCommand` runs the install
+automatically.
 
 ## Development Workflow
 
